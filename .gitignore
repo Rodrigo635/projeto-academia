@@ -1,0 +1,36 @@
+# Ambiente virtual
+env/
+venv/
+
+# Arquivo do banco de dados SQLite
+db.sqlite3
+
+# Pasta de uploads do usuário
+media/
+
+# Compilados do Python
+__pycache__/
+*.py[cod]
+
+# Migrations (opcional ignorar, mas útil se quiser manter o repositório limpo)
+**/migrations/
+!*/migrations/__init__.py
+
+# Arquivos de log e temporários
+*.log
+*.pot
+*.pyc
+*.pyo
+*.swp
+*.bak
+*.tmp
+
+# IDEs e editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
