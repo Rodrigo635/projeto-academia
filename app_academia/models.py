@@ -38,7 +38,7 @@ class Exercise(models.Model):
         null=True, blank=True
     )
     tip = models.TextField()
-    photo = models.ImageField(upload_to='media/exercises/photos/')
+    photo = models.ImageField(upload_to='exercises/photos/')
     video_url = models.URLField(blank=True)
     reps = models.PositiveIntegerField(default=0)
     sets = models.PositiveIntegerField(default=0)
