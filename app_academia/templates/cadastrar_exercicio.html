@@ -1,0 +1,14 @@
+{% extends 'index2.html' %}
+{% block content %}
+<section class="min-vh-100 py-5">
+    <div class="container mt-lg-5">
+        <h2 class="pt-5 pb-3">Cadastrar Exercício</h2>
+        <form method="post" enctype="multipart/form-data" class="card p-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success mt-3">Salvar</button>
+            <a href="{% url 'exercicios' %}" class="btn btn-secondary mt-3 ms-2">Cancelar</a>
+        </form>
+    </div>
+</section>
+{% endblock %}
