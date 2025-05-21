@@ -12,10 +12,6 @@ media/
 __pycache__/
 *.py[cod]
 
-# Migrations (opcional ignorar, mas útil se quiser manter o repositório limpo)
-**/migrations/
-!*/migrations/__init__.py
-
 # Arquivos de log e temporários
 *.log
 *.pot
