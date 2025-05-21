@@ -177,3 +177,14 @@ cython_debug/
 # End of https://www.toptal.com/developers/gitignore/api/django
 
 *.db.sqlite3
+
+# Banco de dados
+db.sqlite3
+
+# Pasta de mídia (uploads)
+media/
+
+# Ambiente virtual
+env/
+.venv/
+ENV/

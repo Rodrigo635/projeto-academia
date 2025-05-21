@@ -82,3 +82,20 @@
             });
         });
     });
+
+document.addEventListener('DOMContentLoaded', function () {
+  const header = document.querySelector('.main-header');
+  const navbarCollapse = document.getElementById('navbarSupportedContent');
+
+  const toggleScrolledClass = () => {
+    if (navbarCollapse.classList.contains('show')) {
+      header.classList.add('scrolled');
+    } else if (window.scrollY <= 50) {
+      header.classList.remove('scrolled');
+    }
+  };
+
+  // Escuta o evento de abertura/fechamento do menu
+  navbarCollapse.addEventListener('shown.bs.collapse', toggleScrolledClass);
+  navbarCollapse.addEventListener('hidden.bs.collapse', toggleScrolledClass);
+});
