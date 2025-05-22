@@ -6,7 +6,7 @@ from django.contrib.auth import logout as auth_logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
-from datetime import date, timedelta
+from datetime import date, timedelta, timezone
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
 
@@ -61,55 +61,64 @@ def logout_view(request):
 @login_required
 @require_http_methods(['GET', 'POST'])
 def inicio(request):
+    # 1) buscar plano ativo
     try:
         active = ActivePlan.objects.get(user=request.user, is_active=True)
     except ActivePlan.DoesNotExist:
-        return render(request, 'inicio.html', {
-            'workout_day': None,
-            'exercises': []
-        })
+        return render(request, 'inicio.html', {'workout_day': None})
 
     plan = active.plan
-
-    # total de dias realmente vinculados a este plano
     plan_days_qs = PlanDay.objects.filter(plan=plan).order_by('sequence')
     total_days = plan_days_qs.count()
     if total_days == 0:
-        # sem dias, não dá pra treinar
-        return render(request, 'inicio.html', {
-            'workout_day': None,
-            'exercises': []
-        })
+        return render(request, 'inicio.html', {'workout_day': None})
 
-    # quantas sessões já foram completadas
-    total_sessions = WorkoutSession.objects.filter(
-        user=request.user,
-        day__in=plan.days.all(),
-        completed=True
-    ).count()
+    # 2) seq vindo do querystring (navegação) ou calculado por sessões concluídas
+    seq_param = request.GET.get('seq')
+    if seq_param:
+        try:
+            seq = int(seq_param)
+        except ValueError:
+            seq = 1
+    else:
+        done = WorkoutSession.objects.filter(
+            user=request.user,
+            day__in=plan.days.all(),
+            completed=True
+        ).count()
+        seq = (done % total_days) + 1
 
-    # calcula seq com loop
-    seq = (total_sessions % total_days) + 1
+    # wrap-around
+    if seq < 1: seq = total_days
+    if seq > total_days: seq = 1
 
-    # pega o PlanDay correspondente
     plan_day = plan_days_qs.get(sequence=seq)
     dia = plan_day.day
     items = WorkoutDayExercise.objects.filter(day=dia).order_by('order')
 
+    # 3) tratamento de POST vindo do modal
     if request.method == 'POST':
-        # salva a sessão concluída
-        WorkoutSession.objects.create(
-            user=request.user,
-            day=dia,
-            completed=True,
-        )
-        # redireciona para recarregar e mostrar o próximo dia
-        return redirect('inicio')
+        form = WorkoutSessionForm(request.POST)
+        if form.is_valid():
+            sess = form.save(commit=False)
+            sess.user = request.user
+            sess.day = dia
+            sess.completed = True
+            sess.save()
+            return redirect('inicio')  # reinicia loop
+    else:
+        today_str = date.today().strftime('%Y-%m-%d')  # converte para string no formato correto
+        form = WorkoutSessionForm(initial={
+            'date': today_str,
+            'duration': timedelta(hours=1),
+        })
 
-    # GET: exibe form
     return render(request, 'inicio.html', {
         'workout_day': dia,
-        'exercises': items
+        'exercises': items,
+        'form': form,
+        'seq': seq,
+        'total_days': total_days,
     })
 
 @login_required

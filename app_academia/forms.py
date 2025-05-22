@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from django.contrib.auth.models import User
-from .models import Exercise, WorkoutDay, WorkoutDayExercise
+from .models import Exercise, WorkoutDay, WorkoutDayExercise, WorkoutSession
 
 class LoginForm(forms.Form):
     email = forms.EmailField()
@@ -53,3 +53,17 @@ class WorkoutDayExerciseForm(forms.ModelForm):
     class Meta:
         model = WorkoutDayExercise
         fields = ['exercise', 'order', 'custom_sets', 'custom_reps', 'rest_sec']
+
+class WorkoutSessionForm(forms.ModelForm):
+    class Meta:
+        model = WorkoutSession
+        fields = ['date', 'duration', 'feeling']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'duration': forms.TimeInput(attrs={'type': 'time'}),
+            'feeling': forms.Select(),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['duration'].widget.attrs.update({'placeholder': '01:00:00'})

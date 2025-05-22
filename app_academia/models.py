@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 class MuscleGroup(models.Model):
     class Meta:
@@ -91,7 +91,7 @@ class WorkoutSession(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     day = models.ForeignKey(WorkoutDay, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.localdate)
     duration = models.DurationField(null=True, blank=True)
     feeling = models.CharField(
         max_length=20,

@@ -2,45 +2,89 @@
 {% block content %}
 <section class="min-vh-100 py-5">
   <div class="container my-lg-5">
-    <h1 class="pt-5 pb-3">Treino de hoje</h1>
+    <div class="pt-5 pb-3 d-flex align-items-center justify-content-between">
+      <div class="col">
+        <h1>Treino de hoje</h1>
+      </div>
+      <div class="col-4 d-flex justify-content-end gap-2">
+        <a href="{% url 'inicio' %}?seq={{ seq|add:'-1' }}" class="btn btn-outline-secondary"><i
+            class="fa-solid fa-arrow-left"></i>
+          <p class="d-none d-lg-inline"> Voltar</p>
+        </a>
+        <a href="{% url 'inicio' %}?seq={{ seq|add:'1' }}" class="btn btn-outline-secondary">
+          <p class="d-none d-lg-inline">Avançar </p><i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
 
     {% if workout_day %}
-      <h2>{{ workout_day.name }}</h2>
-      <p>{{ workout_day.description }}</p>
+    <h2>{{ workout_day.name }}</h2>
+    <p>{{ workout_day.description }}</p>
 
-      <form method="post">
-        {% csrf_token %}
-        {% for item in exercises %}
-          <div class="card my-3">
-            <div class="card-body">
-              <div class="row align-items-center">
-                <div class="col-1 d-flex align-items-center justify-content-center">
-                  <!-- Checkbox para marcar como feito -->
-                  <input type="checkbox" name="ex_{{ item.id }}" />
-                </div>
-                <div class="col-11 col-lg-7">
-                  <h5>{{ item.exercise.name }}</h5>
-                  <p>{{ item.exercise.description }}</p>
-                  <p>Séries: {{ item.custom_sets|default:item.exercise.sets }}</p>
-                  <p>Repetições: {{ item.custom_reps|default:item.exercise.reps }}</p>
-                  <p>Descanso: {{ item.rest_sec|default:item.exercise.rest_sec }}s</p>
-                  <p>Dica: {{ item.exercise.tip }}</p>
-                </div>
-                <div class="col-12 col-lg-4 d-flex justify-content-end">
-                    <img src="{{ item.exercise.photo.url }}" class="img-fluid" alt="{{ item.exercise.name }}">
-                </div>
+    <form method="post" id="form-principal">
+      {% csrf_token %}
+      {% for item in exercises %}
+      <div class="card my-3">
+        <div class="card-body position-relative">
+          <div class="row align-items-center">
+            <div class="col-12 col-lg-8">
+              <!-- Checkbox no topo direito -->
+              <input type="checkbox" class="form-check-input position-absolute"
+                style="top: 1rem; right: 1rem; transform: scale(1.5);" name="ex_{{ item.id }}" />
+              <div class="col-10 col-lg-12">
+                <h5>{{ item.exercise.name }}</h5>
               </div>
+              <p>{{ item.exercise.description }}</p>
+              <p>Séries: {{ item.custom_sets|default:item.exercise.sets }}</p>
+              <p>Repetições: {{ item.custom_reps|default:item.exercise.reps }}</p>
+              <p>Descanso: {{ item.rest_sec|default:item.exercise.rest_sec }}s</p>
+              <p>Dica: {{ item.exercise.tip }}</p>
+            </div>
+            <div class="col-12 col-lg-4 d-flex justify-content-end">
+              <img src="{{ item.exercise.photo.url }}" class="img-fluid" alt="{{ item.exercise.name }}">
             </div>
           </div>
-        {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary w-100" id="btn-finalizar">
+        Finalizar Treino
+      </button>
+    </form>
 
-        <button type="submit" class="btn btn-success mt-3">
-          Finalizar Treino
-        </button>
-      </form>
+    <!-- Modal Bootstrap -->
+    <div class="modal fade" id="modalSession" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <form method="post" class="modal-content">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title">Registrar Sessão</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <!-- Dia (read-only) -->
+              <div class="mb-3">
+                <label class="form-label">Dia Concluído</label>
+                <input type="text" class="form-control" value="{{ workout_day.name }}" readonly>
+              </div>
+              <!-- Date, Duration, Feeling -->
+              {{ form.as_p }}
+              <!-- Preserve seq para não perder a navegação se fechar -->
+              <input type="hidden" name="seq" value="{{ seq }}">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Concluir</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     {% else %}
-      <p>Nenhum plano de treino ativo encontrado.</p>
+    <p>Nenhum plano de treino ativo.</p>
     {% endif %}
   </div>
 </section>
+<script src="../static/js/inicio.js"></script>
 {% endblock %}
