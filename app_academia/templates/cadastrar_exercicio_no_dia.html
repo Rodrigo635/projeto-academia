@@ -33,10 +33,10 @@
         {# Botões Editar / Remover no canto inferior direito do card #}
         <div class="position-absolute" style="bottom: 1rem; right: 1rem;">
           <div class="gap-2">
-            <a href="{% url 'editar_exercicio_no_dia' plano_id dia.id wd.id %}"
+            <!-- <a href="{% url 'editar_exercicio_no_dia' plano_id dia.id wd.id %}"
                class="btn btn-sm btn-secondary text-white">
               <i class="fa-solid fa-pen-to-square"></i>
-            </a>
+            </a> -->
             <form method="post"
                   action="{% url 'remover_exercicio_no_dia' plano_id dia.id wd.id %}"
                   style="display:inline;">
