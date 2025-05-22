@@ -7,9 +7,22 @@
         <ul class="list-group mb-5">
             {% for pd in associados %}
             <li class="list-group-item d-flex justify-content-between">
-                {{ pd.sequence }} – {{ pd.day.name }}
-                <a href="{% url 'cadastrar_exercicio_no_dia' plano.id pd.day.id %}" class="btn btn-sm btn-primary">+
-                    Exercício</a>
+                Dia {{ pd.sequence }} – {{ pd.day.name }}
+                <div class="gap-2">
+                    <!-- Formulário de remoção -->
+                    <form method="post" action="{% url 'remover_dia_do_plano' plano.id pd.id %}"
+                        style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Remover este dia do plano?');">
+                            Remover <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </form>
+                    <!-- Botão Exercícios -->
+                    <a href="{% url 'cadastrar_exercicio_no_dia' plano.id pd.day.id %}" class="btn btn-sm btn-primary">
+                        Exercícios <i class="fa-solid fa-dumbbell"></i>
+                    </a>
+                </div>
             </li>
             {% empty %}
             <li class="list-group-item">Este plano ainda não tem dias.</li>

@@ -5,8 +5,10 @@
     <h1 class="pt-5 pb-3">Novo Dia de Treino</h1>
     <form method="post">{% csrf_token %}
       {{ form.as_p }}
-      <button type="submit" class="btn btn-success">Salvar</button>
-      <a href="{% url 'treinos' %}" class="btn btn-secondary ms-2">Voltar</a>
+      <div class="mt-4 d-flex justify-content-end gap-2">
+        <a href="{% url 'treinos' %}" class="btn btn-secondary">Voltar</a>
+        <button type="submit" class="btn btn-primary">Criar novo dia</button>
+      </div>
     </form>
   </div>
 </section>

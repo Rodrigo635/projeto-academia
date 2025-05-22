@@ -180,26 +180,61 @@ def adicionar_dia_ao_plano(request, plano_id, dia_id):
     PlanDay.objects.create(plan=plano, day=dia, sequence=ultima_seq + 1)
     return redirect('listar_dias', plano_id=plano.id)
 
+@login_required
+def remover_dia_do_plano(request, plano_id, pd_id):
+    plano = get_object_or_404(TrainingPlan, id=plano_id, owner=request.user)
+    plan_day = get_object_or_404(PlanDay, id=pd_id, plan=plano)
+    if request.method == 'POST':
+        plan_day.delete()
+    return redirect('listar_dias', plano_id=plano_id)
+
 
 @login_required
 def cadastrar_exercicio_no_dia(request, plano_id, dia_id):
     dia = get_object_or_404(WorkoutDay, id=dia_id)
+    # pega todas as associações WorkoutDayExercise para esse dia
+    existing = WorkoutDayExercise.objects.filter(day=dia).select_related('exercise')
+
     if request.method == 'POST':
         form = WorkoutDayExerciseForm(request.POST)
         if form.is_valid():
             exerc = form.save(commit=False)
             exerc.day = dia
             exerc.save()
-            # agora sabemos para qual plano devemos voltar
             return redirect('listar_dias', plano_id=plano_id)
     else:
         form = WorkoutDayExerciseForm()
+
     return render(request, 'cadastrar_exercicio_no_dia.html', {
         'form': form,
         'dia': dia,
-        'plano_id': plano_id,   # se você precisar no template
+        'plano_id': plano_id,
+        'existing': existing,    # <<--- aqui
     })
 
+@login_required
+def editar_exercicio_no_dia(request, plano_id, dia_id, wd_id):
+    wd = get_object_or_404(WorkoutDayExercise, id=wd_id, day__id=dia_id)
+    if request.method == 'POST':
+        form = WorkoutDayExerciseForm(request.POST, instance=wd)
+        if form.is_valid():
+            form.save()
+            return redirect('cadastrar_exercicio_no_dia', plano_id=plano_id, dia_id=dia_id)
+    else:
+        form = WorkoutDayExerciseForm(instance=wd)
+    return render(request, 'editar_exercicio_no_dia.html', {
+        'form': form,
+        'dia': wd.day,
+        'plano_id': plano_id,
+        'wd': wd,
+    })
+
+@login_required
+def remover_exercicio_no_dia(request, plano_id, dia_id, wd_id):
+    wd = get_object_or_404(WorkoutDayExercise, id=wd_id, day__id=dia_id)
+    if request.method == 'POST':
+        wd.delete()
+    return redirect('cadastrar_exercicio_no_dia', plano_id=plano_id, dia_id=dia_id)
 
 @login_required
 def novo_plano(request):

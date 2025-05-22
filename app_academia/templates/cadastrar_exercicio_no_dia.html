@@ -1,13 +1,75 @@
 {% extends 'index2.html' %}
 {% block content %}
 <section class="min-vh-100 py-5">
-    <div class="container my-lg-5">
-        <h1 class="pt-5 pb-3">Adicionar Exercício ao {{ dia.name }}</h1>
-        <form method="post">{% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-success">Salvar</button>
-            <a href="{% url 'listar_dias' plano_id %}" class="btn btn-secondary ms-2">Voltar</a>
-        </form>
+  <div class="container my-lg-5">
+
+    <h1 class="pt-5 pb-3">Exercícios de {{ dia.name }}</h1>
+
+    {# === Lista de exercícios existentes como cards === #}
+    {% if existing %}
+      {% for wd in existing %}
+      <div class="card mb-3 position-relative">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="{{ wd.exercise.photo.url }}" class="img-fluid rounded-start" alt="{{ wd.exercise.name }}">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">
+                {{ wd.order }} - {{ wd.exercise.name }}
+              </h5>
+              <p class="card-text">{{ wd.exercise.description }}</p>
+              <div class="d-flex justify-content-between">
+                <small class="text-muted">Séries: {{ wd.custom_sets|default:wd.exercise.sets }}</small>
+                <small class="text-muted">Repetições: {{ wd.custom_reps|default:wd.exercise.reps }}</small>
+                <small class="text-muted">Descanso: {{ wd.rest_sec|default:wd.exercise.rest_sec }}s</small>
+              </div>
+              {% if wd.exercise.tip %}
+              <p class="mt-2"><strong>Dica:</strong> {{ wd.exercise.tip }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {# Botões Editar / Remover no canto inferior direito do card #}
+        <div class="position-absolute" style="bottom: 1rem; right: 1rem;">
+          <div class="gap-2">
+            <a href="{% url 'editar_exercicio_no_dia' plano_id dia.id wd.id %}"
+               class="btn btn-sm btn-secondary text-white">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+            <form method="post"
+                  action="{% url 'remover_exercicio_no_dia' plano_id dia.id wd.id %}"
+                  style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger"
+                      onclick="return confirm('Remover este exercício?');">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">Nenhum exercício adicionado ainda.</p>
+    {% endif %}
+
+    {# === Formulário de adição === #}
+    <div class="card p-4 mt-4 overflow-hidden">
+      <h4 class="mb-3">Adicionar novo exercício</h4>
+      <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <div class="mt-4 d-flex justify-content-end gap-2">
+          <a href="{% url 'listar_dias' plano_id %}" class="btn btn-secondary">
+            Voltar
+          </a>
+          <button type="submit" class="btn btn-primary">
+            Adicionar
+          </button>
+        </div>
+      </form>
     </div>
+
+  </div>
 </section>
 {% endblock %}

@@ -23,8 +23,10 @@
                 <option value="advanced" {% if plano.difficulty == 'advanced' %}selected{% endif %}>Avançado</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-        <a href="{% url 'treinos' %}" class="btn btn-secondary ms-2">Cancelar</a>
+        <div class="mt-4 d-flex justify-content-end gap-2">
+            <a href="{% url 'treinos' %}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        </div>
     </form>
 </div>
 </section>

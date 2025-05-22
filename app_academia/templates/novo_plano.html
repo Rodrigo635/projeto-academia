@@ -24,7 +24,10 @@
                     <option value="advanced">Avançado</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Criar treino</button>
+            <div class="mt-4 d-flex justify-content-end gap-2">
+                <a href="{% url 'treinos' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Criar treino</button>
+            </div>
         </form>
     </div>
 </section>

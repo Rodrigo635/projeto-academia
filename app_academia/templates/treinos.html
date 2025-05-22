@@ -17,19 +17,19 @@
               (desde {{ plano_ativo.start_date }})
             </p>
           </div>
-          <div class="col-12 col-lg-3 d-flex gap-2 align-items-lg-start justify-content-lg-end">
-            <a href="{% url 'editar_plano' plano_ativo.plan.id %}"
-               class="btn btn-warning text-white">
-              Editar
-              <i class="fa-solid fa-pen-to-square"></i>
-            </a>
+          <div class="col-12 col-lg-3 d-flex gap-2 align-items-lg-start justify-content-end">
             <a href="{% url 'desativar_plano' %}"
                class="btn btn-danger text-white">
               Desativar
               <i class="fa-solid fa-xmark"></i>
             </a>
+            <a href="{% url 'editar_plano' plano_ativo.plan.id %}"
+               class="btn btn-secondary text-white">
+              Editar
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
             <a href="{% url 'listar_dias' plano_ativo.plan.id %}"
-               class="btn btn-info text-white">
+               class="btn btn-primary text-white">
               Dias
               <i class="fa-solid fa-calendar-day"></i>
             </a>
@@ -43,7 +43,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h1>Meus treinos:</h1>
       <div>
-        <a href="{% url 'novo_plano' %}" class="btn btn-success">
+        <a href="{% url 'novo_plano' %}" class="btn btn-primary">
           Novo treino <i class="fa-solid fa-plus"></i>
         </a>
       </div>
@@ -51,40 +51,38 @@
 
     <ul class="list-group">
       {% for plano in meus_planos %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <div>
-            <strong>{{ plano.name }}</strong>
-          </div>
-          <div class="d-flex gap-2">
-            <!-- Editar Plano -->
-            <a href="{% url 'editar_plano' plano.id %}"
-               class="btn btn-sm btn-warning text-white">
-              Editar
-              <i class="fa-solid fa-pen-to-square"></i>
-            </a>
+        <li class="list-group-item">
+          <div class="row d-flex justify-content-lg-between">
+            <div class="col-12 col-lg-8">
+              <h5><strong>{{ plano.name }}</strong></h5>
+            </div>
+            <div class="col-12 col-lg-4 mt-3 mt-lg-0 d-flex justify-content-end gap-2">
+              <!-- Ativar / Desativar -->
+              {% if plano_ativo and plano_ativo.plan.id == plano.id %}
+                <a href="{% url 'desativar_plano' %}"
+                   class="btn btn-danger text-white">
+                  <i class="fa-solid fa-xmark"></i>
+                </a>
+              {% else %}
+                <a href="{% url 'ativar_plano' plano.id %}"
+                   class="btn btn-primary text-white">
+                  <i class="fa-solid fa-check"></i>
+                </a>
+              {% endif %}
 
-            <!-- Ativar / Desativar -->
-            {% if plano_ativo and plano_ativo.plan.id == plano.id %}
-              <a href="{% url 'desativar_plano' %}"
-                 class="btn btn-sm btn-danger text-white">
-                Desativar 
-                <i class="fa-solid fa-xmark"></i>
+              <!-- Editar Plano -->
+              <a href="{% url 'editar_plano' plano.id %}"
+                 class="btn btn-secondary text-white">
+                <i class="fa-solid fa-pen-to-square"></i>
               </a>
-            {% else %}
-              <a href="{% url 'ativar_plano' plano.id %}"
-                 class="btn btn-sm btn-primary text-white">
-                Ativar 
-                <i class="fa-solid fa-check"></i>
-              </a>
-            {% endif %}
 
-            <!-- Ver / Gerenciar Dias -->
-            <a href="{% url 'listar_dias' plano.id %}"
-               class="btn btn-sm btn-info text-white">
-              Dias
-              <i class="fa-solid fa-calendar-day"></i>
-            </a>
-          </div>
+              <!-- Ver / Gerenciar Dias -->
+              <a href="{% url 'listar_dias' plano.id %}"
+                 class="btn btn-primary text-white">
+                <i class="fa-solid fa-calendar-day"></i>
+              </a>
+            </div><!-- col -->
+          </div><!-- row -->
         </li>
       {% empty %}
         <li class="list-group-item">Você ainda não tem planos cadastrados.</li>
