@@ -13,7 +13,7 @@ from django.views.decorators.http import require_http_methods
 
 def home(request):
     if request.user.is_authenticated:
-        return render(request, 'inicio.html')
+        return redirect('inicio')
     else:
         return render(request, 'home.html')
 
@@ -310,4 +310,14 @@ def cadastrar_exercicio(request):
 
 @login_required
 def estatisticas(request):
-    return render(request, 'estatisticas.html')
+    sessoes_concluidas = WorkoutSession.objects.filter(
+        user=request.user,
+        completed=True
+    ).order_by('-date')
+
+    total_concluidas = sessoes_concluidas.count()
+
+    return render(request, 'estatisticas.html', {
+        'total_concluidas': total_concluidas,
+        'sessoes': sessoes_concluidas
+    })

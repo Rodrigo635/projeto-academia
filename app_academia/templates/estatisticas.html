@@ -4,8 +4,57 @@
 <link rel="stylesheet" href="../static/css/meus_treinos.css">
 
 <section class="min-vh-100 pt-5">
-    <div class="container my-5">
-        <h1 class="py-5 pb-3">Estatísticas</h1>
+  <div class="container my-5">
+    <h1 class="py-5 pb-3">Estatísticas</h1>
+
+    <div class="mb-4">
+      <h3>Total de sessões concluídas: {{ total_concluidas }}</h3>
     </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Dia de treino</th>
+            <th>Duração</th>
+            <th>Como foi?</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sessao in sessoes %}
+          <tr>
+            <td>{{ sessao.date }}</td>
+            <td>{{ sessao.day.name }}</td>
+            <td>
+              {% if sessao.duration %}
+                {{ sessao.duration }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if sessao.feeling == 'easy' %}
+                Fácil
+              {% elif sessao.feeling == 'normal' %}
+                Normal
+              {% elif sessao.feeling == 'hard' %}
+                Difícil
+              {% elif sessao.feeling == 'tired' %}
+                Cansativo
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4">Nenhuma sessão concluída ainda.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </section>
 {% endblock %}
