@@ -133,17 +133,30 @@ def treinos(request):
 
 
 @login_required
-def novo_dia(request):
+def novo_dia(request, plano_id):
+    plano = get_object_or_404(TrainingPlan, id=plano_id, owner=request.user)
+
     if request.method == 'POST':
         form = WorkoutDayForm(request.POST)
         if form.is_valid():
-            form.save()
-            # ou para uma lista global de dias
-            return redirect('treinos')
+            dia = form.save()          # cria o WorkoutDay
+            # vincula imediatamente ao plano
+            ultima_seq = PlanDay.objects.filter(plan=plano).aggregate(
+                models.Max('sequence')
+            )['sequence__max'] or 0
+            PlanDay.objects.create(
+                plan=plano,
+                day=dia,
+                sequence=ultima_seq + 1
+            )
+            return redirect('listar_dias', plano_id=plano_id)
     else:
         form = WorkoutDayForm()
-    return render(request, 'novo_dia.html', {'form': form})
 
+    return render(request, 'novo_dia.html', {
+        'form': form,
+        'plano': plano
+    })
 
 @login_required
 def editar_dia(request, dia_id):
@@ -162,11 +175,12 @@ def editar_dia(request, dia_id):
 def listar_dias(request, plano_id):
     plano = get_object_or_404(TrainingPlan, id=plano_id, owner=request.user)
     associados = PlanDay.objects.filter(plan=plano).select_related('day')
-    todos_dias = WorkoutDay.objects.exclude(training_plans=plano)
+
+    # não precisamos mais de "todos_dias" globais,
+    # pois só criamos dias por plano
     return render(request, 'listar_dias.html', {
         'plano': plano,
-        'associados': associados,
-        'todos_dias': todos_dias,
+        'associados': associados
     })
 
 
