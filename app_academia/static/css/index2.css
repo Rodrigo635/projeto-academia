@@ -9,7 +9,19 @@ a {
 }
 
 .main-header {
+    background: #0d6efd !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-toggler {
+    border: none !important;
+    color: #fff !important;
+}
+
+.main-header .navbar-brand,
+.main-header .logo-icon,
+.main-header .nav-link {
+  color: #fff !important;
 }
 
 .logo-projeto {

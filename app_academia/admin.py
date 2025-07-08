@@ -1,7 +1,11 @@
 from django.contrib import admin
 from .models import *
 
-admin.site.register(Exercise)
+class ExerciseAdmin(admin.ModelAdmin):
+    list_display = ('name','use_weight', 'weight', 'reps', 'sets', 'rest_sec')
+    list_filter = ('use_weight', 'weight', 'reps', 'sets', 'rest_sec')
+
+admin.site.register(Exercise, ExerciseAdmin)
 admin.site.register(MuscleGroup)
 admin.site.register(Tag)
 admin.site.register(WorkoutDay)

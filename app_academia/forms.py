@@ -31,13 +31,23 @@ class ExerciseForm(forms.ModelForm):
         model = Exercise
         fields = [
             'name', 'description', 'use_weight', 'tip',
-            'photo', 'video_url', 'rest_sec',
-            'muscles', 'tags'
+            'photo', 'video_url', 'reps', 'sets',
+            'rest_sec', 'muscles', 'tags',
         ]
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 3}),
-            'tip': forms.Textarea(attrs={'rows': 2}),
-            'tags': forms.CheckboxSelectMultiple(),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'use_weight': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'tip': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'photo': forms.FileInput(attrs={'class': 'form-control'}),
+            'video_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'reps': forms.NumberInput(attrs={'class': 'form-control'}),
+            'sets': forms.NumberInput(attrs={'class': 'form-control'}),
+            'rest_sec': forms.NumberInput(attrs={'class': 'form-control'}),
+            'muscles': forms.SelectMultiple(attrs={'class': 'form-select', 'size': 5}),
+            'tags': forms.CheckboxSelectMultiple(
+                attrs={'class': 'form-check-input'}
+            ),
         }
 
 class WorkoutDayForm(forms.ModelForm):
@@ -45,14 +55,29 @@ class WorkoutDayForm(forms.ModelForm):
         model = WorkoutDay
         fields = ['name', 'description', 'tags']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 2}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            # O CheckboxSelectMultiple não aceita diretamente 'form-check-input' no widget,
+            # mas a gente vai tratar isso no template:
             'tags': forms.CheckboxSelectMultiple(),
         }
 
 class WorkoutDayExerciseForm(forms.ModelForm):
-    class Meta:
-        model = WorkoutDayExercise
-        fields = ['exercise', 'order', 'custom_sets', 'custom_reps', 'rest_sec']
+     class Meta:
+         model = WorkoutDayExercise
+         fields = ['exercise', 'order', 'custom_sets', 'custom_reps', 'rest_sec']
+         widgets = {
+            'exercise': forms.Select(),
+            'order': forms.NumberInput(),
+            'custom_sets': forms.NumberInput(),
+            'custom_reps': forms.NumberInput(),
+            'rest_sec': forms.NumberInput(),
+            'exercise': forms.Select(attrs={'class': 'form-select'}),
+            'order': forms.NumberInput(attrs={'class': 'form-control'}),
+            'custom_sets': forms.NumberInput(attrs={'class': 'form-control'}),
+            'custom_reps': forms.NumberInput(attrs={'class': 'form-control'}),
+            'rest_sec': forms.NumberInput(attrs={'class': 'form-control'}),
+         }
 
 class WorkoutSessionForm(forms.ModelForm):
     class Meta:

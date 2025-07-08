@@ -3,9 +3,48 @@
 <section class="min-vh-100 py-5">
   <div class="container my-lg-5">
     <h1 class="pt-5 pb-3">Novo Dia de Treino</h1>
-    <form method="post">{% csrf_token %}
-      {{ form.as_p }}
-      <div class="mt-4 d-flex justify-content-end gap-2">
+    <form method="post" class="card p-4">
+      {% csrf_token %}
+
+      {# Campo: nome #}
+      <div class="row mb-3">
+        <label for="{{ form.name.id_for_label }}" class="col-sm-3 col-form-label">
+          Nome do dia de treino
+        </label>
+        <div class="col-sm-12">
+          {{ form.name }}
+          {{ form.name.errors }}
+        </div>
+      </div>
+
+      {# Campo: descrição #}
+      <div class="row mb-3">
+        <label for="{{ form.description.id_for_label }}" class="col-sm-3 col-form-label">
+          Descrição do dia de treino
+        </label>
+        <div class="col-sm-12">
+          {{ form.description }}
+          {{ form.description.errors }}
+        </div>
+      </div>
+
+      {# Campo: tags (checkboxes) #}
+      <fieldset class="row mb-4">
+        <legend class="col-form-label col-sm-3 pt-0">Tags</legend>
+        <div class="col-sm-12">
+          {% for checkbox in form.tags %}
+            <div class="form-check">
+              {{ checkbox }} 
+              <label class="form-check-label" for="{{ checkbox.id_for_label }}">
+              </label>
+            </div>
+          {% endfor %}
+          {{ form.tags.errors }}
+        </div>
+      </fieldset>
+
+      {# Botões #}
+      <div class="d-flex justify-content-end gap-2">
         <a href="{% url 'treinos' %}" class="btn btn-secondary">Voltar</a>
         <button type="submit" class="btn btn-primary">Criar novo dia</button>
       </div>

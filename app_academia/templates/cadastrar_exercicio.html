@@ -1,16 +1,109 @@
 {% extends 'index2.html' %}
 {% block content %}
 <section class="min-vh-100 py-5">
-    <div class="container mt-lg-5">
-        <h2 class="pt-5 pb-3">Cadastrar Exercício</h2>
-        <form method="post" enctype="multipart/form-data" class="card p-4">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <div class="mt-4 d-flex justify-content-end gap-2">
-                <a href="{% url 'exercicios' %}" class="btn btn-secondary mt-3">Cancelar</a>
-                <button type="submit" class="btn btn-primary mt-3">Criar exercício</button>
+  <div class="container mt-lg-5">
+    <h2 class="pt-5 pb-3">Cadastrar Exercício</h2>
+    <form method="post" enctype="multipart/form-data" class="card p-4">
+      {% csrf_token %}
+
+      <div class="row mb-3">
+        <label for="{{ form.name.id_for_label }}" class="col-sm-3 col-form-label">Nome do exercício</label>
+        <div class="col-sm-12">
+          {{ form.name }}
+          {{ form.name.errors }}
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="{{ form.description.id_for_label }}" class="col-sm-3 col-form-label">Descrição</label>
+        <div class="col-sm-12">
+          {{ form.description }}
+          {{ form.description.errors }}
+        </div>
+      </div>
+
+      <fieldset class="row mb-3">
+        <legend class="col-form-label col-sm-3 pt-0">Usa peso?</legend>
+        <div class="col-sm-12">
+          <div class="form-check">
+            {{ form.use_weight }}
+            <label class="form-check-label" for="{{ form.use_weight.id_for_label }}">Sim</label>
+          </div>
+          {{ form.use_weight.errors }}
+        </div>
+      </fieldset>
+
+      <div class="row mb-3">
+        <label for="{{ form.tip.id_for_label }}" class="col-sm-3 col-form-label">Dica</label>
+        <div class="col-sm-12">
+          {{ form.tip }}
+          {{ form.tip.errors }}
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="{{ form.photo.id_for_label }}" class="col-sm-3 col-form-label">Foto/GIF</label>
+        <div class="col-sm-12">
+          {{ form.photo }}
+          {{ form.photo.errors }}
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="{{ form.video_url.id_for_label }}" class="col-sm-3 col-form-label">URL do vídeo</label>
+        <div class="col-sm-12">
+          {{ form.video_url }}
+          {{ form.video_url.errors }}
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-sm-6">
+          <label for="{{ form.reps.id_for_label }}" class="form-label">Repetições</label>
+          {{ form.reps }}
+          {{ form.reps.errors }}
+        </div>
+        <div class="col-sm-6">
+          <label for="{{ form.sets.id_for_label }}" class="form-label">Séries</label>
+          {{ form.sets }}
+          {{ form.sets.errors }}
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="{{ form.rest_sec.id_for_label }}" class="col-sm-3 col-form-label">Descanso (s)</label>
+        <div class="col-sm-12">
+          {{ form.rest_sec }}
+          {{ form.rest_sec.errors }}
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="{{ form.muscles.id_for_label }}" class="col-sm-3 col-form-label">Grupos musculares</label>
+        <div class="col-sm-12">
+          {{ form.muscles }}
+          {{ form.muscles.errors }}
+        </div>
+      </div>
+
+      <fieldset class="row mb-4">
+        <legend class="col-form-label col-sm-3 pt-0">Tags</legend>
+        <div class="col-sm-12">
+          {% for cb in form.tags %}
+            <div class="form-check form-check-inline">
+              {{ cb.tag }}
+              {{ cb.choice_label }}
             </div>
-        </form>
-    </div>
+          {% endfor %}
+          {{ form.tags.errors }}
+        </div>
+      </fieldset>
+
+      <div class="d-flex justify-content-end gap-2">
+        <a href="{% url 'exercicios' %}" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Criar exercício</button>
+      </div>
+    </form>
+  </div>
 </section>
 {% endblock %}
